@@ -1,6 +1,6 @@
 # PRD: Readtree 독서플랫폼
 
-**문서 버전**: 2.0  
+**문서 버전**: 2.2  
 **작성일**: 2025년 12월  
 **최종 수정일**: 2025년 12월  
 **제품명**: Readtree 독서플랫폼 (Readtree by Habitree)
@@ -205,7 +205,7 @@
 
 **수용 기준**:
 - 모임 생성 시간 1분 이내
-- 실시간 진행 현황 업데이트
+- 실시간 진행 현황 업데이트 (Supabase Realtime 활용)
 - 모임 운영자 권한 관리
 
 ---
@@ -279,138 +279,203 @@
 
 ### 6.1 기술 스택
 
-#### Frontend
-- **Framework**: React
-- **Language**: TypeScript (권장)
+#### Frontend & Backend
+- **Framework**: Next.js (App Router)
+- **Language**: TypeScript
 - **Styling**: Tailwind CSS
 - **State Management**: React Context API 또는 Zustand
+- **API Routes**: Next.js API Routes (서버 사이드 로직)
 
-#### Backend & Database
-- **Authentication**: Firebase Authentication
-- **Database**: Firestore Database
-- **Storage**: Firebase Storage (이미지 저장)
-- **Functions**: Firebase Cloud Functions (서버리스)
+#### Database & Storage
+- **Authentication**: Supabase Authentication (카카오/구글 소셜 로그인 지원)
+- **Database**: Supabase PostgreSQL (관계형 데이터베이스)
+- **Storage**: Supabase Storage (이미지 저장)
+- **Real-time**: Supabase Realtime (실시간 업데이트)
 
 #### External Services
 - **이미지 처리**: OCR (Optical Character Recognition) API
 - **책 정보**: 책 정보 API (예: 알라딘, 교보문고, 네이버 도서)
-- **인프라**: 서버리스 기반 운영 (저비용)
+- **AI/LLM**: Google Gemini API (고급 검색, 의미 분석 등)
+- **인프라**: Vercel (서버리스 배포 및 호스팅)
 
 ### 6.2 시스템 아키텍처
 
 ```
-┌─────────────────────────────────────────┐
-│         Client (React)                  │
-│  ┌──────────┐  ┌──────────┐            │
-│  │  Pages   │  │Components│            │
-│  └──────────┘  └──────────┘            │
-│         │              │                │
-│  ┌──────────┐  ┌──────────┐            │
-│  │   Hooks  │  │  Utils    │            │
-│  └──────────┘  └──────────┘            │
-└─────────┬──────────────────┬────────────┘
+┌─────────────────────────────────────────────────┐
+│         Next.js Application (Vercel)              │
+│  ┌──────────────────────────────────────────┐  │
+│  │         Frontend (App Router)            │  │
+│  │  ┌──────────┐  ┌──────────┐             │  │
+│  │  │  Pages   │  │Components│             │  │
+│  │  └──────────┘  └──────────┘             │  │
+│  │  ┌──────────┐  ┌──────────┐             │  │
+│  │  │   Hooks  │  │  Utils    │             │  │
+│  │  └──────────┘  └──────────┘             │  │
+│  └──────────────────────────────────────────┘  │
+│  ┌──────────────────────────────────────────┐  │
+│  │      Backend (API Routes)                │  │
+│  │  /api/books, /api/notes, /api/groups     │  │
+│  └──────────────────────────────────────────┘  │
+└─────────┬──────────────────┬───────────────────┘
           │                  │
           ▼                  ▼
-┌─────────────────┐  ┌──────────────┐
-│   Firebase      │  │   External   │
-│  - Auth         │  │   Services   │
-│  - Firestore    │  │  - OCR API   │
-│  - Storage      │  │  - Book API  │
-│  - Functions    │  │              │
-└─────────────────┘  └──────────────┘
+┌─────────────────┐  ┌──────────────────────┐
+│   Supabase      │  │   External Services  │
+│  - Auth         │  │  - OCR API           │
+│  - PostgreSQL   │  │  - Book API          │
+│  - Storage      │  │  - Gemini API (AI)   │
+│  - Realtime     │  │                      │
+└─────────────────┘  └──────────────────────┘
 ```
 
-### 6.3 데이터베이스 스키마 (Firestore)
+### 6.3 배포 및 인프라
 
-#### users 컬렉션
-```javascript
-{
-  id: string (Firebase Auth UID),
-  email: string,
-  name: string,
-  avatarUrl: string,
-  createdAt: timestamp,
-  updatedAt: timestamp
-}
+#### 배포 플랫폼
+- **호스팅**: Vercel
+- **배포 방식**: Git 연동 자동 배포
+- **환경 변수 관리**: Vercel 환경 변수 설정
+- **도메인**: Vercel 제공 도메인 또는 커스텀 도메인
+
+#### 배포 프로세스
+1. GitHub/GitLab 저장소에 코드 푸시
+2. Vercel이 자동으로 빌드 및 배포
+3. 프리뷰 배포 (Pull Request별)
+4. 프로덕션 배포 (메인 브랜치)
+
+### 6.4 데이터베이스 스키마 (Supabase PostgreSQL)
+
+#### users 테이블
+```sql
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT UNIQUE NOT NULL,
+  name TEXT,
+  avatar_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
 ```
 
-#### books 컬렉션
-```javascript
-{
-  id: string,
-  isbn: string,
-  title: string,
-  author: string,
-  publisher: string,
-  coverImageUrl: string,
-  description: string,
-  publishedDate: date,
-  category: string,
-  createdAt: timestamp
-}
+#### books 테이블
+```sql
+CREATE TABLE books (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  isbn TEXT UNIQUE,
+  title TEXT NOT NULL,
+  author TEXT,
+  publisher TEXT,
+  cover_image_url TEXT,
+  description TEXT,
+  published_date DATE,
+  category TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
 ```
 
-#### user_books 컬렉션 (독서 기록)
-```javascript
-{
-  id: string,
-  userId: string,
-  bookId: string,
-  status: 'want_to_read' | 'reading' | 'completed',
-  startedAt: date,
-  completedAt: date,
-  createdAt: timestamp,
-  updatedAt: timestamp
-}
+#### user_books 테이블 (독서 기록)
+```sql
+CREATE TABLE user_books (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  book_id UUID REFERENCES books(id) ON DELETE CASCADE,
+  status TEXT CHECK (status IN ('want_to_read', 'reading', 'completed')) DEFAULT 'want_to_read',
+  started_at DATE,
+  completed_at DATE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(user_id, book_id)
+);
 ```
 
-#### notes 컬렉션 (필사/메모/사진)
-```javascript
-{
-  id: string,
-  userId: string,
-  bookId: string,
-  type: 'quote' | 'photo' | 'memo',
-  content: string, // 필사 내용 또는 메모
-  imageUrl: string, // 사진 URL
-  pageNumber: number,
-  tags: string[],
-  isPublic: boolean, // 공개 여부
-  createdAt: timestamp,
-  updatedAt: timestamp
-}
+#### notes 테이블 (필사/메모/사진)
+```sql
+CREATE TABLE notes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  book_id UUID REFERENCES books(id) ON DELETE CASCADE,
+  type TEXT CHECK (type IN ('quote', 'photo', 'memo')) NOT NULL,
+  content TEXT,
+  image_url TEXT,
+  page_number INTEGER,
+  tags TEXT[] DEFAULT '{}',
+  is_public BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Full-text search를 위한 인덱스
+CREATE INDEX idx_notes_content_search ON notes USING gin(to_tsvector('korean', content));
+CREATE INDEX idx_notes_user_book ON notes(user_id, book_id);
 ```
 
-#### reading_groups 컬렉션 (독서모임)
-```javascript
-{
-  id: string,
-  name: string,
-  description: string,
-  leaderId: string,
-  memberIds: string[],
-  bookIds: string[], // 모임에서 읽는 책들
-  createdAt: timestamp,
-  updatedAt: timestamp
-}
+#### reading_groups 테이블 (독서모임)
+```sql
+CREATE TABLE reading_groups (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  description TEXT,
+  leader_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
 ```
 
-#### group_activities 컬렉션 (모임 활동)
-```javascript
-{
-  id: string,
-  groupId: string,
-  userId: string,
-  bookId: string,
-  noteId: string, // 공유한 필사/메모
-  progress: number, // 읽은 페이지/퍼센트
-  createdAt: timestamp
-}
+#### group_members 테이블 (모임 멤버)
+```sql
+CREATE TABLE group_members (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  group_id UUID REFERENCES reading_groups(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  joined_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(group_id, user_id)
+);
 ```
 
-### 6.4 API 설계
+#### group_books 테이블 (모임에서 읽는 책)
+```sql
+CREATE TABLE group_books (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  group_id UUID REFERENCES reading_groups(id) ON DELETE CASCADE,
+  book_id UUID REFERENCES books(id) ON DELETE CASCADE,
+  added_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(group_id, book_id)
+);
+```
 
-#### Firebase Functions
+#### group_activities 테이블 (모임 활동)
+```sql
+CREATE TABLE group_activities (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  group_id UUID REFERENCES reading_groups(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  book_id UUID REFERENCES books(id) ON DELETE CASCADE,
+  note_id UUID REFERENCES notes(id) ON DELETE SET NULL,
+  progress INTEGER, -- 읽은 페이지/퍼센트
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+#### Row Level Security (RLS) 정책
+```sql
+-- 사용자는 자신의 데이터만 조회/수정 가능
+ALTER TABLE notes ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view own notes" ON notes
+  FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users can insert own notes" ON notes
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can update own notes" ON notes
+  FOR UPDATE USING (auth.uid() = user_id);
+CREATE POLICY "Users can delete own notes" ON notes
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- 공개된 노트는 모든 사용자가 조회 가능
+CREATE POLICY "Public notes are viewable by everyone" ON notes
+  FOR SELECT USING (is_public = true);
+```
+
+### 6.5 API 설계
+
+#### Next.js API Routes
 
 **`/api/books/search`** (GET)
 - 책 검색
@@ -433,6 +498,7 @@
 - 문장 단위 검색
 - Query: `q` (검색어), `bookId`, `date`, `tags`
 - Response: 검색 결과
+- 참고: Phase 2에서 Gemini API를 활용한 의미 기반 검색 추가 예정
 
 **`/api/notes/share`** (POST)
 - 공유 카드뉴스 생성
@@ -446,7 +512,7 @@
 - PUT: 모임 수정
 - DELETE: 모임 삭제
 
-**`/api/groups/:groupId/activities`** (GET)
+**`/api/groups/[groupId]/activities`** (GET)
 - 모임 활동 조회
 - Response: 구성원들의 진행 상황 및 기록
 
@@ -454,6 +520,11 @@
 - 독서 타임라인 조회
 - Query: `userId`, `startDate`, `endDate`
 - Response: 시간순 기록 목록
+
+**`/api/ai/search`** (POST) - Phase 2
+- Gemini API를 활용한 AI 기반 의미 검색
+- Body: `{ query, context }`
+- Response: 의미 기반 검색 결과
 
 ---
 
@@ -477,14 +548,20 @@
 ### 7.2 문장 단위 검색
 
 **검색 인덱싱**:
-- Firestore의 Full-Text Search 또는 Algolia 연동
+- PostgreSQL Full-Text Search (to_tsvector, to_tsquery 활용)
 - 문장 단위로 인덱싱
 - 메타데이터 태깅 (책 제목, 날짜, 주제, 필사 유형)
+- 필요시 Algolia 또는 Typesense 연동 고려
 
-**검색 기능**:
+**검색 기능 (MVP)**:
 - 전체 텍스트 검색
 - 필터링 (책 제목, 날짜, 주제, 필사 유형)
 - 관련도 순 정렬
+
+**고급 검색 (Phase 2)**:
+- Gemini API를 활용한 의미 기반 검색
+- 유사 문장 찾기 (의미적으로 유사한 문장 검색)
+- 자연어 질의 처리 (예: "인생에 대한 깨달음이 담긴 문장")
 
 ### 7.3 공유 기능
 
@@ -554,14 +631,15 @@
 **목표**: 핵심 가치 검증 - "기록을 다시 찾고, 정리하고, 공유할 수 있는 경험"
 
 **포함 기능**:
-- ✅ 사용자 인증 (Firebase Auth - 카카오/구글)
+- ✅ 사용자 인증 (Supabase Auth - 카카오/구글 소셜 로그인)
 - ✅ 책 검색 및 등록 (ISBN 검색, 표지 촬영)
 - ✅ 필사/사진/메모 기록 작성
 - ✅ 기록 자동 정리 (책별 분류)
-- ✅ 문장 단위 검색
+- ✅ 문장 단위 검색 (PostgreSQL Full-Text Search)
 - ✅ 공유 기능 (카드뉴스 생성)
 - ✅ 독서 타임라인
 - ✅ 독서모임 기본 기능 (생성, 참여, 진행 현황)
+- ✅ Vercel 배포 및 호스팅
 
 **제외 기능**:
 - ❌ 크리에이터 커뮤니티 고급 기능
@@ -576,10 +654,11 @@
 **목표**: 사용자 참여도 향상 및 커뮤니티 강화
 
 **추가 기능**:
-- 독서 리포트 (주간/월간)
+- 독서 리포트 (주간/월간) - Gemini API를 활용한 인사이트 생성
 - 크리에이터 커뮤니티 고급 기능
-- 고급 검색 기능
+- 고급 검색 기능 (Gemini API 기반 의미 검색, 유사 문장 찾기)
 - 공유 템플릿 확장
+- AI 기반 독서 추천 (Gemini API 활용)
 
 **기간**: 8-10주
 
@@ -589,9 +668,10 @@
 
 **추가 기능**:
 - Book Circulation (사용자 간 책 대여, 중고책 판매, 책 선물)
-- AI 기반 의미 검색
-- 프리미엄 기능
+- AI 기반 독서 분석 및 인사이트 (Gemini API 활용한 심화 분석)
+- 프리미엄 기능 (고급 템플릿, 무제한 저장, 우선 지원 등)
 - 유료 구독 모델
+- AI 기반 독서 코치 (Gemini API를 활용한 개인화된 독서 가이드)
 
 ---
 
@@ -601,17 +681,18 @@
 
 | 지표 | 목표 | 측정 방법 |
 |------|------|----------|
-| 활성 사용자 수 (WAU) | 주간 활성 사용자 | Firestore 사용자 로그 분석 |
+| 활성 사용자 수 (WAU) | 주간 활성 사용자 | Supabase 사용자 로그 분석 |
 | 기록 재사용률 (검색) | 30% 이상 | 검색 이벤트 / 총 기록 수 |
-| 필사·메모 작성수 | 월 10개 이상 | notes 컬렉션 집계 |
+| 필사·메모 작성수 | 월 10개 이상 | notes 테이블 집계 |
 | 타임라인 조회 빈도 | 주 2회 이상 | 타임라인 페이지 조회 이벤트 |
 | 공유 횟수 | 월 5회 이상 | 공유 이벤트 추적 |
-| 독서모임 참여율 | 20% 이상 | reading_groups 참여 사용자 / 전체 사용자 |
+| 독서모임 참여율 | 20% 이상 | group_members 참여 사용자 / 전체 사용자 |
 
 ### 10.2 분석 도구
 
-- **Firebase Analytics**: 기본 사용자 행동 분석
-- **Custom Event Tracking**: 주요 기능 사용 추적
+- **Vercel Analytics**: 기본 사용자 행동 분석 (페이지뷰, 성능 지표)
+- **Supabase Analytics**: 데이터베이스 쿼리 성능 모니터링
+- **Custom Event Tracking**: 주요 기능 사용 추적 (Next.js API Routes 활용)
 - **User Feedback**: 인앱 피드백 수집
 
 ---
@@ -623,8 +704,12 @@
 | 리스크 | 영향도 | 대응 방안 |
 |--------|--------|----------|
 | OCR 정확도 낮음 | 높음 | 여러 OCR API 비교, 사용자 수정 기능 제공 |
-| Firestore 성능 이슈 | 중간 | 인덱싱 최적화, 쿼리 최적화, 캐싱 |
+| PostgreSQL 성능 이슈 | 중간 | 인덱싱 최적화, 쿼리 최적화, 연결 풀링, 캐싱 |
 | 이미지 저장 비용 증가 | 중간 | 이미지 압축, CDN 활용, 사용량 모니터링 |
+| Supabase 연결 제한 | 중간 | 연결 풀 최적화, 필요시 플랜 업그레이드 |
+| Vercel 배포 제한사항 | 중간 | Vercel 플랜 모니터링, 필요시 업그레이드, 함수 실행 시간 최적화 |
+| Next.js 빌드 시간 증가 | 낮음 | 코드 스플리팅, 동적 임포트 활용, 빌드 캐싱 |
+| Gemini API 비용 증가 | 중간 | API 호출 최적화, 캐싱 전략, 사용량 모니터링 |
 
 ### 11.2 제품 리스크
 
