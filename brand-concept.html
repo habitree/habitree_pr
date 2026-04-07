@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Concept — Habitree</title>
+<meta name="description" content="Habitree 브랜드 철학, 서비스 포지셔닝, 아이덴티티, 연결 전략을 정리한 공식 컨셉 문서입니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root {
+  --h-primary: hsl(150, 40%, 22%);
+  --h-gold: hsl(35, 65%, 55%);
+  --h-accent: hsl(155, 65%, 42%);
+  --h-bg: hsl(0, 0%, 98%);
+  --h-surface: #ffffff;
+  --h-text: hsl(0, 0%, 12%);
+  --h-text-muted: hsl(0, 0%, 42%);
+  --h-text-dim: hsl(0, 0%, 58%);
+  --h-border: hsl(0, 0%, 90%);
+  --h-dark: #0b271e;
+  --h-green: #52b788;
+  --lm-primary: hsl(220, 65%, 30%);
+  --lm-accent: hsl(160, 70%, 45%);
+  --rt-primary: hsl(130, 36%, 28%);
+  --rt-gold: hsl(35, 65%, 55%);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'Pretendard Variable', -apple-system, sans-serif;
+  background: var(--h-bg); color: var(--h-text); line-height: 1.7;
+}
+a { color: inherit; text-decoration: none; }
+
+/* Global Nav */
+.global-nav {
+  background: var(--h-dark); color: #fff; padding: 10px 0; font-size: 13px;
+}
+.global-nav .inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.global-nav a.brand { color: var(--h-green); font-weight: 700; display: flex; align-items: center; gap: 6px; }
+.global-nav a.brand img { width: 18px; height: 18px; border-radius: 4px; }
+.global-nav .breadcrumb { display: flex; align-items: center; gap: 12px; }
+.global-nav .sep { color: hsla(0,0%,100%,0.3); }
+.global-nav .current { color: hsla(0,0%,100%,0.9); }
+.global-nav .links { display: flex; gap: 16px; }
+.global-nav .links a { color: hsla(0,0%,100%,0.7); transition: color 0.2s; }
+.global-nav .links a:hover { color: #fff; }
+
+/* Hero */
+.hero {
+  background: linear-gradient(135deg, var(--h-dark) 0%, hsl(150, 35%, 18%) 50%, hsl(140, 30%, 14%) 100%);
+  color: #fff; padding: 100px 0 80px; text-align: center;
+}
+.hero h1 {
+  font-family: 'Noto Serif KR', serif; font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 900; margin-bottom: 20px; letter-spacing: -0.04em; line-height: 1.2;
+}
+.hero h1 .accent { color: var(--h-gold); }
+.hero .subtitle {
+  font-size: 1.15rem; color: hsla(0,0%,100%,0.75); max-width: 640px; margin: 0 auto 32px;
+}
+.hero .brand-etymology {
+  display: inline-flex; gap: 12px; align-items: center;
+  background: hsla(0,0%,100%,0.08); border: 1px solid hsla(0,0%,100%,0.15);
+  padding: 10px 24px; border-radius: 100px; font-size: 0.9rem; font-weight: 600;
+}
+.hero .brand-etymology .plus { color: var(--h-gold); }
+
+/* Container */
+.container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+
+/* Sections */
+.section { padding: 72px 0; }
+.section-alt { background: var(--h-surface); }
+.section h2 {
+  font-family: 'Noto Serif KR', serif; font-size: 1.8rem; font-weight: 900;
+  margin-bottom: 12px; letter-spacing: -0.03em;
+}
+.section .section-desc { color: var(--h-text-muted); margin-bottom: 40px; font-size: 0.95rem; }
+
+/* Philosophy */
+.philosophy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.philosophy-card {
+  background: var(--h-surface); border: 1px solid var(--h-border); border-radius: 16px;
+  padding: 32px; transition: transform 0.3s, box-shadow 0.3s;
+}
+.philosophy-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.06); }
+.philosophy-card .label { font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--h-text-dim); margin-bottom: 8px; }
+.philosophy-card h3 { font-size: 1.15rem; font-weight: 800; margin-bottom: 8px; }
+.philosophy-card p { font-size: 0.9rem; color: var(--h-text-muted); }
+
+/* Blockquote */
+.brand-quote {
+  text-align: center; padding: 48px 32px; margin: 40px 0;
+  background: linear-gradient(135deg, hsla(150, 40%, 22%, 0.03) 0%, hsla(35, 65%, 55%, 0.03) 100%);
+  border-radius: 20px; border: 1px solid var(--h-border);
+}
+.brand-quote blockquote {
+  font-family: 'Noto Serif KR', serif; font-size: 1.5rem; font-weight: 700;
+  color: var(--h-primary); letter-spacing: -0.02em; line-height: 1.5;
+}
+.brand-quote cite { display: block; margin-top: 12px; font-size: 0.85rem; color: var(--h-text-dim); font-style: normal; }
+
+/* Service Positioning */
+.service-position { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.svc-card {
+  border-radius: 16px; padding: 36px; color: #fff; position: relative; overflow: hidden;
+}
+.svc-card.linkmap { background: linear-gradient(135deg, hsl(220, 65%, 25%), hsl(220, 50%, 35%)); }
+.svc-card.readtree { background: linear-gradient(135deg, hsl(130, 40%, 20%), hsl(130, 36%, 30%)); }
+.svc-card .svc-num { font-size: 0.65rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: hsla(0,0%,100%,0.5); margin-bottom: 12px; }
+.svc-card h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+.svc-card .tagline { font-size: 1rem; color: hsla(0,0%,100%,0.8); margin-bottom: 16px; font-style: italic; }
+.svc-card p { font-size: 0.85rem; color: hsla(0,0%,100%,0.7); margin-bottom: 16px; }
+.svc-card .pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.svc-card .pill { background: hsla(0,0%,100%,0.12); border: 1px solid hsla(0,0%,100%,0.2); padding: 4px 12px; border-radius: 100px; font-size: 0.72rem; font-weight: 600; }
+.svc-card .svc-link { display: inline-block; margin-top: 16px; font-weight: 700; font-size: 0.85rem; color: #fff; border-bottom: 1px solid hsla(0,0%,100%,0.4); }
+.svc-card .svc-link:hover { border-color: #fff; }
+
+/* Identity */
+.identity-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+.id-card {
+  background: var(--h-surface); border: 1px solid var(--h-border); border-radius: 14px;
+  padding: 24px; text-align: center;
+}
+.id-card h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 12px; }
+.color-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 8px; }
+.color-swatch { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--h-border); }
+.color-label { font-size: 0.7rem; color: var(--h-text-dim); font-family: 'JetBrains Mono', monospace; }
+.font-sample { font-size: 1.2rem; font-weight: 700; margin-bottom: 4px; }
+.font-name { font-size: 0.72rem; color: var(--h-text-dim); }
+
+/* Naming Rules */
+.naming-table {
+  width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9rem;
+}
+.naming-table th, .naming-table td {
+  text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--h-border);
+}
+.naming-table th { font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--h-text-dim); }
+.naming-table .correct { color: var(--h-accent); font-weight: 700; }
+.naming-table .incorrect { color: hsl(0, 65%, 50%); text-decoration: line-through; }
+
+/* Builder Story */
+.builder-story {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; text-align: center;
+}
+.builder-stat .num { font-size: 2.4rem; font-weight: 900; color: var(--h-primary); letter-spacing: -0.03em; }
+.builder-stat .label { font-size: 0.82rem; color: var(--h-text-muted); margin-top: 4px; }
+.builder-quote {
+  grid-column: 1 / -1; text-align: center; padding: 24px;
+  font-family: 'Noto Serif KR', serif; font-size: 1.1rem; color: var(--h-text-muted);
+  font-style: italic;
+}
+
+/* Roadmap */
+.roadmap-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+.roadmap-card {
+  background: var(--h-surface); border: 1px solid var(--h-border); border-radius: 14px;
+  padding: 24px;
+}
+.roadmap-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; }
+.roadmap-card ul { list-style: none; }
+.roadmap-card li { font-size: 0.85rem; color: var(--h-text-muted); padding: 4px 0; padding-left: 16px; position: relative; }
+.roadmap-card li::before { content: ''; position: absolute; left: 0; top: 12px; width: 6px; height: 6px; border-radius: 50%; }
+.roadmap-card.done li::before { background: var(--h-accent); }
+.roadmap-card.progress li::before { background: var(--h-gold); }
+.roadmap-card.future li::before { background: var(--h-border); }
+
+/* Ecosystem Diagram */
+.ecosystem {
+  text-align: center; padding: 48px 32px; margin: 40px 0;
+  background: var(--h-surface); border: 1px solid var(--h-border); border-radius: 20px;
+}
+.ecosystem h3 { font-family: 'Noto Serif KR', serif; font-size: 1.3rem; font-weight: 900; margin-bottom: 24px; }
+.ecosystem-diagram {
+  display: flex; align-items: center; justify-content: center; gap: 40px; flex-wrap: wrap;
+}
+.eco-node {
+  padding: 20px 32px; border-radius: 14px; font-weight: 700; font-size: 0.95rem;
+  border: 2px solid; transition: transform 0.3s;
+}
+.eco-node:hover { transform: scale(1.05); }
+.eco-node.habitree { background: hsla(150, 40%, 22%, 0.08); border-color: var(--h-primary); color: var(--h-primary); font-size: 1.2rem; }
+.eco-node.linkmap { background: hsla(220, 65%, 30%, 0.06); border-color: var(--lm-primary); color: var(--lm-primary); }
+.eco-node.readtree { background: hsla(130, 36%, 28%, 0.06); border-color: var(--rt-primary); color: var(--rt-primary); }
+.eco-connector { font-size: 1.5rem; color: var(--h-text-dim); }
+
+/* Footer */
+.brand-footer {
+  background: var(--h-dark); color: hsla(0,0%,100%,0.6); padding: 48px 0; text-align: center; font-size: 0.85rem;
+}
+.brand-footer a { color: var(--h-green); }
+.brand-footer .links { display: flex; gap: 24px; justify-content: center; margin-bottom: 16px; }
+.brand-footer .links a { color: hsla(0,0%,100%,0.7); transition: color 0.2s; }
+.brand-footer .links a:hover { color: #fff; }
+
+@media (max-width: 768px) {
+  .philosophy-grid, .service-position, .identity-grid, .builder-story, .roadmap-grid { grid-template-columns: 1fr; }
+  .global-nav .links { display: none; }
+  .hero { padding: 72px 0 56px; }
+  .ecosystem-diagram { flex-direction: column; gap: 16px; }
+  .eco-connector { transform: rotate(90deg); }
+}
+</style>
+</head>
+<body>
+
+<!-- Global Nav -->
+<nav class="global-nav">
+  <div class="inner">
+    <div class="breadcrumb">
+      <a href="index.html" class="brand">
+        <img src="assets/images/habitree-logo.png" alt=""> Habitree
+      </a>
+      <span class="sep">/</span>
+      <span class="current">Brand Concept</span>
+    </div>
+    <div class="links">
+      <a href="linkmap/index.html">Linkmap</a>
+      <a href="readtree/index.html">ReadTree</a>
+      <a href="presskit.html">Press Kit</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <h1>쌓이지 않으면<br><span class="accent">자산이 아닙니다</span></h1>
+    <p class="subtitle">매일의 기록이 뿌리가 되고, 습관이 가지가 되어 당신만의 나무로 자랍니다.</p>
+    <div class="brand-etymology">
+      <span>Habit (습관)</span>
+      <span class="plus">+</span>
+      <span>Tree (나무)</span>
+      <span class="plus">=</span>
+      <span style="color: var(--h-gold);">Habitree</span>
+    </div>
+  </div>
+</section>
+
+<!-- 1. Brand Philosophy -->
+<section class="section">
+  <div class="container">
+    <h2>브랜드 철학</h2>
+    <p class="section-desc">Habitree는 보이지 않는 습관을 보이는 자산으로 전환하는 플랫폼 생태계입니다.</p>
+
+    <div class="philosophy-grid">
+      <div class="philosophy-card">
+        <div class="label">Mission</div>
+        <h3>보이지 않는 습관을 보이는 자산으로</h3>
+        <p>개발 설정, 독서 기록 등 매일 반복하지만 쉽게 사라지는 습관들을 체계적으로 축적하여 개인의 지적 자산으로 전환합니다.</p>
+      </div>
+      <div class="philosophy-card">
+        <div class="label">Core Insight</div>
+        <h3>잃어버리지 않으면, 자산이 됩니다</h3>
+        <p>흩어진 API 키, 잊혀진 밑줄. 사라지지 않게 기록하면, 그것이 곧 당신의 자산이 됩니다.</p>
+      </div>
+      <div class="philosophy-card">
+        <div class="label">Problem: Developer</div>
+        <h3>Stripe 키를 잃어버렸다</h3>
+        <p>Notion, 메모장, .env 파일 사이에 흩어진 API 키와 설정. 중요한 연결이 단절되는 순간, 개발 속도가 멈춥니다.</p>
+      </div>
+      <div class="philosophy-card">
+        <div class="label">Problem: Reader</div>
+        <h3>갤러리 속에 묻힌 책 사진</h3>
+        <p>밑줄 치고 찍은 사진은 갤러리에 묻히고, 감동받은 문장은 기억 속에서 사라집니다. 독서의 흔적이 자산으로 남지 않습니다.</p>
+      </div>
+    </div>
+
+    <div class="brand-quote">
+      <blockquote>"쌓이지 않으면 자산이 아닙니다.<br>매일의 기록이 뿌리가 되고, 습관이 가지가 되어<br>당신만의 나무로 자랍니다."</blockquote>
+      <cite>Habitree Brand Statement</cite>
+    </div>
+  </div>
+</section>
+
+<!-- 2. Service Positioning -->
+<section class="section section-alt">
+  <div class="container">
+    <h2>서비스 포지셔닝</h2>
+    <p class="section-desc">Habitree 아래 두 가지 서비스가 각각의 습관 영역을 담당합니다.</p>
+
+    <!-- Ecosystem Diagram -->
+    <div class="ecosystem">
+      <h3>Habitree Ecosystem</h3>
+      <div class="ecosystem-diagram">
+        <a href="linkmap/index.html" class="eco-node linkmap">Linkmap</a>
+        <span class="eco-connector">&larr;</span>
+        <div class="eco-node habitree">Habitree</div>
+        <span class="eco-connector">&rarr;</span>
+        <a href="readtree/index.html" class="eco-node readtree">ReadTree</a>
+      </div>
+    </div>
+
+    <div class="service-position">
+      <div class="svc-card linkmap">
+        <div class="svc-num">Service 01</div>
+        <h3>Linkmap</h3>
+        <p class="tagline">"연결은 많은데 지도가 없었습니다"</p>
+        <p>개발자를 위한 설정 관리 플랫폼. 외부 서비스 연결을 시각화하고, API 키와 환경변수를 AES-256-GCM으로 안전하게 관리합니다.</p>
+        <div class="pills">
+          <span class="pill">Next.js 16</span>
+          <span class="pill">Cloudflare Workers</span>
+          <span class="pill">React Flow</span>
+          <span class="pill">AES-256-GCM</span>
+        </div>
+        <a href="linkmap/index.html" class="svc-link">자세히 보기 &rarr;</a>
+      </div>
+      <div class="svc-card readtree">
+        <div class="svc-num">Service 02</div>
+        <h3>ReadTree</h3>
+        <p class="tagline">"밑줄만 치고 끝나는 독서, 이제 그만"</p>
+        <p>책 전용 기록 플랫폼. AI OCR로 문장을 추출하고, 독서 타임라인을 쌓고, 카드뉴스로 공유합니다.</p>
+        <div class="pills">
+          <span class="pill">Next.js 14+</span>
+          <span class="pill">Vercel</span>
+          <span class="pill">Supabase</span>
+          <span class="pill">Google Vision AI</span>
+        </div>
+        <a href="readtree/index.html" class="svc-link">자세히 보기 &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. Brand Identity -->
+<section class="section">
+  <div class="container">
+    <h2>브랜드 아이덴티티</h2>
+    <p class="section-desc">컬러 팔레트, 타이포그래피, 네이밍 규칙을 정의합니다.</p>
+
+    <!-- Color -->
+    <div class="identity-grid">
+      <div class="id-card">
+        <h4>Habitree Brand</h4>
+        <div class="color-row">
+          <div>
+            <div class="color-swatch" style="background: hsl(150, 40%, 22%);"></div>
+            <div class="color-label">Deep Emerald</div>
+          </div>
+          <div>
+            <div class="color-swatch" style="background: hsl(35, 65%, 55%);"></div>
+            <div class="color-label">Warm Gold</div>
+          </div>
+        </div>
+      </div>
+      <div class="id-card">
+        <h4>Linkmap</h4>
+        <div class="color-row">
+          <div>
+            <div class="color-swatch" style="background: hsl(220, 65%, 30%);"></div>
+            <div class="color-label">Deep Blue</div>
+          </div>
+          <div>
+            <div class="color-swatch" style="background: hsl(160, 70%, 45%);"></div>
+            <div class="color-label">Mint Green</div>
+          </div>
+        </div>
+      </div>
+      <div class="id-card">
+        <h4>ReadTree</h4>
+        <div class="color-row">
+          <div>
+            <div class="color-swatch" style="background: hsl(130, 36%, 28%);"></div>
+            <div class="color-label">Forest Green</div>
+          </div>
+          <div>
+            <div class="color-swatch" style="background: hsl(35, 65%, 55%);"></div>
+            <div class="color-label">Kraft Gold</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Typography -->
+    <div class="identity-grid" style="margin-top: 24px;">
+      <div class="id-card">
+        <div class="font-sample" style="font-family: 'Pretendard Variable', sans-serif;">Pretendard</div>
+        <div class="font-name">Primary UI / Body Text</div>
+      </div>
+      <div class="id-card">
+        <div class="font-sample" style="font-family: 'Noto Serif KR', serif;">Noto Serif</div>
+        <div class="font-name">Headlines / Emphasis</div>
+      </div>
+      <div class="id-card">
+        <div class="font-sample" style="font-family: 'JetBrains Mono', monospace;">JetBrains</div>
+        <div class="font-name">Code / Technical</div>
+      </div>
+    </div>
+
+    <!-- Naming Rules -->
+    <h3 style="margin-top: 40px; margin-bottom: 8px; font-size: 1.1rem;">네이밍 규칙</h3>
+    <table class="naming-table">
+      <thead>
+        <tr>
+          <th>브랜드</th>
+          <th>올바른 표기</th>
+          <th>잘못된 표기</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>브랜드</td>
+          <td class="correct">Habitree</td>
+          <td class="incorrect">HabiTree, habitree, HABITREE</td>
+        </tr>
+        <tr>
+          <td>서비스 01</td>
+          <td class="correct">Linkmap</td>
+          <td class="incorrect">LinkMap, linkmap, LINKMAP</td>
+        </tr>
+        <tr>
+          <td>서비스 02</td>
+          <td class="correct">ReadTree</td>
+          <td class="incorrect">Readtree, readtree, Reading Tree</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 4. Builder Story -->
+<section class="section section-alt">
+  <div class="container">
+    <h2>빌더 스토리</h2>
+    <p class="section-desc">한 명이 만들었습니다. Claude가 옆에 있었을 뿐.</p>
+
+    <div class="builder-story">
+      <div class="builder-stat">
+        <div class="num">1,800+</div>
+        <div class="label">커밋</div>
+      </div>
+      <div class="builder-stat">
+        <div class="num">2</div>
+        <div class="label">프로덕션 서비스</div>
+      </div>
+      <div class="builder-stat">
+        <div class="num">1 + AI</div>
+        <div class="label">개발자</div>
+      </div>
+      <div class="builder-quote">
+        "1인 개발자와 AI의 협업으로 탄생한 Habitree.<br>
+        Vibe Coding과 Build in Public 정신으로,<br>
+        서울에서 두 가지 습관 플랫폼을 만들어가고 있습니다."
+      </div>
+    </div>
+
+    <div style="margin-top: 32px; text-align: center;">
+      <div style="display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+        <span style="background: var(--h-bg); border: 1px solid var(--h-border); padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;">TypeScript</span>
+        <span style="background: var(--h-bg); border: 1px solid var(--h-border); padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;">Next.js</span>
+        <span style="background: var(--h-bg); border: 1px solid var(--h-border); padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;">Supabase</span>
+        <span style="background: var(--h-bg); border: 1px solid var(--h-border); padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;">React Flow</span>
+        <span style="background: var(--h-bg); border: 1px solid var(--h-border); padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;">Tailwind CSS</span>
+        <span style="background: var(--h-bg); border: 1px solid var(--h-border); padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;">Claude Code</span>
+        <span style="background: var(--h-bg); border: 1px solid var(--h-border); padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;">AES-256-GCM</span>
+        <span style="background: var(--h-bg); border: 1px solid var(--h-border); padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;">Google Vision AI</span>
+        <span style="background: var(--h-bg); border: 1px solid var(--h-border); padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;">Cloudflare Workers</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Connection Strategy & Roadmap -->
+<section class="section">
+  <div class="container">
+    <h2>서비스 연결 전략 &amp; 로드맵</h2>
+    <p class="section-desc">두 서비스의 시너지를 높이고, Habitree 생태계를 확장합니다.</p>
+
+    <div class="roadmap-grid">
+      <div class="roadmap-card done">
+        <h4>완료</h4>
+        <ul>
+          <li>ReadTree 구축 · 재구축 · 정제</li>
+          <li>AI OCR 구현 (Google Vision)</li>
+          <li>Linkmap 플랫폼 론칭</li>
+          <li>서비스 맵 · 환경변수 암호화</li>
+          <li>Habitree 브랜드 통합 랜딩</li>
+        </ul>
+      </div>
+      <div class="roadmap-card progress">
+        <h4>진행 중</h4>
+        <ul>
+          <li>크로스 서비스 계정 연동</li>
+          <li>독서 모임 기능 확장</li>
+          <li>원클릭 템플릿 고도화</li>
+          <li>영상 자동화 파이프라인</li>
+          <li>브랜드 문서 체계화</li>
+        </ul>
+      </div>
+      <div class="roadmap-card future">
+        <h4>계획</h4>
+        <ul>
+          <li>공개 서비스 카탈로그</li>
+          <li>Public API 제공</li>
+          <li>Habitree 통합 대시보드</li>
+          <li>구독 모델 (프리미엄)</li>
+          <li>마켓플레이스 확장</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Connection Points -->
+    <div style="margin-top: 40px; padding: 32px; background: var(--h-surface); border: 1px solid var(--h-border); border-radius: 16px;">
+      <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 16px;">연결 포인트</h3>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div style="padding: 16px; background: hsla(220, 65%, 30%, 0.04); border-radius: 12px;">
+          <strong style="color: var(--lm-primary);">Linkmap &rarr; ReadTree</strong>
+          <p style="font-size: 0.85rem; color: var(--h-text-muted); margin-top: 4px;">Linkmap의 서비스 카탈로그에 ReadTree를 등록. 개발자가 독서 기록 API를 자신의 프로젝트에 연결할 수 있는 템플릿 제공.</p>
+        </div>
+        <div style="padding: 16px; background: hsla(130, 36%, 28%, 0.04); border-radius: 12px;">
+          <strong style="color: var(--rt-primary);">ReadTree &rarr; Linkmap</strong>
+          <p style="font-size: 0.85rem; color: var(--h-text-muted); margin-top: 4px;">ReadTree 사용자가 기록한 개발 서적의 인사이트를 Linkmap의 프로젝트 설정에 연결. 읽은 기술 서적 기반 스택 추천.</p>
+        </div>
+        <div style="padding: 16px; background: hsla(150, 40%, 22%, 0.04); border-radius: 12px; grid-column: 1 / -1;">
+          <strong style="color: var(--h-primary);">Habitree 통합 계정</strong>
+          <p style="font-size: 0.85rem; color: var(--h-text-muted); margin-top: 4px;">하나의 Habitree 계정으로 Linkmap과 ReadTree를 모두 사용. 통합 대시보드에서 개발 습관과 독서 습관을 한눈에 확인하고, 두 영역의 성장 궤적을 추적합니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="brand-footer">
+  <div class="container">
+    <div class="links">
+      <a href="index.html">Habitree Home</a>
+      <a href="linkmap/index.html">Linkmap</a>
+      <a href="readtree/index.html">ReadTree</a>
+      <a href="presskit.html">Press Kit</a>
+      <a href="automation/pipeline-overview.html">Automation</a>
+    </div>
+    <p>&copy; 2025 ~ 2026 <a href="index.html">Habitree</a>. 보이지 않는 습관을 보이는 자산으로.</p>
+  </div>
+</footer>
+
+</body>
+</html>

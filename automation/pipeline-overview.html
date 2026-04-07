@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Automation Pipeline — Habitree</title>
+<meta name="description" content="Habitree 영상 자동화 파이프라인: Linkmap n8n Video Pipeline과 ReadTree Shorts 시스템 통합 개요.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root {
+  --h-primary: hsl(150, 40%, 22%);
+  --h-gold: hsl(35, 65%, 55%);
+  --h-bg: hsl(0, 0%, 98%);
+  --h-surface: #ffffff;
+  --h-text: hsl(0, 0%, 12%);
+  --h-text-muted: hsl(0, 0%, 42%);
+  --h-text-dim: hsl(0, 0%, 58%);
+  --h-border: hsl(0, 0%, 90%);
+  --h-dark: #0b271e;
+  --h-green: #52b788;
+  --lm-primary: hsl(220, 65%, 30%);
+  --rt-primary: hsl(130, 36%, 28%);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body { font-family: 'Pretendard Variable', -apple-system, sans-serif; background: var(--h-bg); color: var(--h-text); line-height: 1.7; }
+a { color: inherit; text-decoration: none; }
+
+.global-nav { background: var(--h-dark); color: #fff; padding: 10px 0; font-size: 13px; }
+.global-nav .inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
+.global-nav a.brand { color: var(--h-green); font-weight: 700; display: flex; align-items: center; gap: 6px; }
+.global-nav a.brand img { width: 18px; height: 18px; border-radius: 4px; }
+.global-nav .breadcrumb { display: flex; align-items: center; gap: 12px; }
+.global-nav .sep { color: hsla(0,0%,100%,0.3); }
+.global-nav .current { color: hsla(0,0%,100%,0.9); }
+.global-nav .links { display: flex; gap: 16px; }
+.global-nav .links a { color: hsla(0,0%,100%,0.7); transition: color 0.2s; }
+.global-nav .links a:hover { color: #fff; }
+
+.hero {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  color: #fff; padding: 80px 0 60px; text-align: center;
+}
+.hero h1 { font-family: 'Noto Serif KR', serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; margin-bottom: 16px; letter-spacing: -0.03em; }
+.hero .subtitle { font-size: 1.05rem; color: hsla(0,0%,100%,0.75); max-width: 600px; margin: 0 auto; }
+
+.container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+.section { padding: 64px 0; }
+.section-alt { background: var(--h-surface); }
+.section h2 { font-family: 'Noto Serif KR', serif; font-size: 1.6rem; font-weight: 900; margin-bottom: 12px; letter-spacing: -0.03em; }
+.section .desc { color: var(--h-text-muted); margin-bottom: 32px; font-size: 0.95rem; }
+
+/* Pipeline Cards */
+.pipeline-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.pipeline-card {
+  border-radius: 16px; padding: 32px; color: #fff; position: relative;
+}
+.pipeline-card.linkmap { background: linear-gradient(135deg, hsl(220, 65%, 22%), hsl(220, 50%, 32%)); }
+.pipeline-card.readtree { background: linear-gradient(135deg, hsl(130, 40%, 18%), hsl(130, 36%, 28%)); }
+.pipeline-card .svc-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: hsla(0,0%,100%,0.5); margin-bottom: 8px; }
+.pipeline-card h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 8px; }
+.pipeline-card .tag-desc { font-size: 0.9rem; color: hsla(0,0%,100%,0.75); margin-bottom: 16px; }
+
+/* Steps */
+.steps { counter-reset: step; }
+.step {
+  display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid hsla(0,0%,100%,0.1);
+  font-size: 0.85rem; color: hsla(0,0%,100%,0.8);
+}
+.step::before {
+  counter-increment: step; content: counter(step);
+  flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+  background: hsla(0,0%,100%,0.12); display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.75rem;
+}
+
+/* Tech Table */
+.tech-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.tech-table th, .tech-table td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--h-border); }
+.tech-table th { font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--h-text-dim); }
+.tech-table .cost { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--h-green); }
+
+/* KPI */
+.kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; }
+.kpi-card {
+  background: var(--h-surface); border: 1px solid var(--h-border); border-radius: 12px;
+  padding: 20px; text-align: center;
+}
+.kpi-card .num { font-size: 1.6rem; font-weight: 900; color: var(--h-primary); }
+.kpi-card .label { font-size: 0.75rem; color: var(--h-text-muted); margin-top: 4px; }
+
+/* Content Series */
+.series-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-top: 20px; }
+.series-card {
+  background: var(--h-surface); border: 1px solid var(--h-border); border-radius: 12px;
+  padding: 16px; text-align: center;
+}
+.series-card .emoji { font-size: 1.5rem; margin-bottom: 8px; }
+.series-card h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 4px; }
+.series-card p { font-size: 0.72rem; color: var(--h-text-muted); }
+
+.footer { background: var(--h-dark); color: hsla(0,0%,100%,0.6); padding: 40px 0; text-align: center; font-size: 0.85rem; }
+.footer a { color: var(--h-green); }
+.footer .links { display: flex; gap: 24px; justify-content: center; margin-bottom: 16px; }
+.footer .links a { color: hsla(0,0%,100%,0.7); }
+.footer .links a:hover { color: #fff; }
+
+@media (max-width: 768px) {
+  .pipeline-grid, .kpi-grid { grid-template-columns: 1fr; }
+  .global-nav .links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Global Nav -->
+<nav class="global-nav">
+  <div class="inner">
+    <div class="breadcrumb">
+      <a href="../index.html" class="brand">
+        <img src="../assets/images/habitree-logo.png" alt=""> Habitree
+      </a>
+      <span class="sep">/</span>
+      <span class="current">Automation Pipeline</span>
+    </div>
+    <div class="links">
+      <a href="../linkmap/index.html">Linkmap</a>
+      <a href="../readtree/index.html">ReadTree</a>
+      <a href="../brand-concept.html">Brand</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <h1>Automation Pipeline</h1>
+    <p class="subtitle">Habitree 생태계의 영상 콘텐츠 자동화 시스템. AI 기반 스크립트 생성부터 렌더링, 배포까지.</p>
+  </div>
+</section>
+
+<!-- Pipeline Overview -->
+<section class="section">
+  <div class="container">
+    <h2>두 가지 파이프라인</h2>
+    <p class="desc">각 서비스의 특성에 맞는 자동화 시스템을 운영합니다.</p>
+
+    <div class="pipeline-grid">
+      <!-- Linkmap Pipeline -->
+      <div class="pipeline-card linkmap">
+        <div class="svc-label">Linkmap</div>
+        <h3>n8n Video Pipeline</h3>
+        <p class="tag-desc">n8n 워크플로우 기반 풀스택 영상 자동화. Gemini AI 스크립트 생성부터 YouTube 배포까지.</p>
+        <div class="steps">
+          <div class="step">Google Sheets 큐에서 대기 콘텐츠 조회</div>
+          <div class="step">소스 수집 (텍스트/URL/GDoc/Sheet)</div>
+          <div class="step">Gemini AI 스크립트 생성 (팟캐스트/내레이션/쇼츠)</div>
+          <div class="step">JSON2Video / Creatomate 영상 렌더링</div>
+          <div class="step">Google Drive 업로드 및 저장</div>
+          <div class="step">YouTube SEO 메타데이터 생성 + 업로드</div>
+        </div>
+      </div>
+
+      <!-- ReadTree Pipeline -->
+      <div class="pipeline-card readtree">
+        <div class="svc-label">ReadTree</div>
+        <h3>Remotion Shorts Pipeline</h3>
+        <p class="tag-desc">React + Remotion 기반 숏폼 영상 자동 생성. Claude API 스크립트 + ElevenLabs TTS.</p>
+        <div class="steps">
+          <div class="step">Supabase DB에서 콘텐츠 데이터 입력</div>
+          <div class="step">Claude API로 한국어 내레이션 스크립트 생성</div>
+          <div class="step">ElevenLabs TTS 음성 생성</div>
+          <div class="step">Remotion React 컴포넌트로 영상 렌더링</div>
+          <div class="step">음성 + 영상 + BGM + 자막 합성 (MP4)</div>
+          <div class="step">QA 검증 후 Instagram/YouTube/TikTok 업로드</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ReadTree Content Series -->
+<section class="section section-alt">
+  <div class="container">
+    <h2>ReadTree 콘텐츠 시리즈 (5종)</h2>
+    <p class="desc">다양한 포맷으로 독서 콘텐츠를 자동 생산합니다.</p>
+
+    <div class="series-grid">
+      <div class="series-card">
+        <div class="emoji">💬</div>
+        <h4>Daily Quote</h4>
+        <p>오늘의 문장. 15-30초. 주 3회.</p>
+      </div>
+      <div class="series-card">
+        <div class="emoji">📖</div>
+        <h4>1분 서평</h4>
+        <p>핵심 메시지 + 추천. 45-60초. 주 1회.</p>
+      </div>
+      <div class="series-card">
+        <div class="emoji">💡</div>
+        <h4>독서 팁</h4>
+        <p>앱 활용법 + 습관. 30-45초. 주 1회.</p>
+      </div>
+      <div class="series-card">
+        <div class="emoji">⚔️</div>
+        <h4>Book vs Book</h4>
+        <p>유사 도서 비교. 30-45초. 격주.</p>
+      </div>
+      <div class="series-card">
+        <div class="emoji">📱</div>
+        <h4>App Preview</h4>
+        <p>기능 시연. 30-45초. 격주.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Tech Stack & Cost -->
+<section class="section">
+  <div class="container">
+    <h2>기술 스택 및 비용</h2>
+    <p class="desc">최소 비용으로 최대 자동화를 달성합니다.</p>
+
+    <table class="tech-table">
+      <thead>
+        <tr>
+          <th>구성요소</th>
+          <th>Linkmap Pipeline</th>
+          <th>ReadTree Pipeline</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>워크플로우 엔진</td>
+          <td>n8n (Self-hosted)</td>
+          <td>Remotion CLI</td>
+        </tr>
+        <tr>
+          <td>AI 스크립트</td>
+          <td>Gemini 2.5 Flash</td>
+          <td>Claude API</td>
+        </tr>
+        <tr>
+          <td>TTS / 음성</td>
+          <td>Gemini TTS</td>
+          <td>ElevenLabs Starter</td>
+        </tr>
+        <tr>
+          <td>영상 렌더링</td>
+          <td>JSON2Video / Creatomate</td>
+          <td>Remotion (OSS) + FFmpeg</td>
+        </tr>
+        <tr>
+          <td>데이터 관리</td>
+          <td>Google Sheets</td>
+          <td>Supabase</td>
+        </tr>
+        <tr>
+          <td>배포 채널</td>
+          <td>YouTube</td>
+          <td>Instagram / YouTube / TikTok</td>
+        </tr>
+        <tr>
+          <td>월간 예상 비용</td>
+          <td class="cost">~$20-40</td>
+          <td class="cost">~$10-40</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- KPIs -->
+<section class="section section-alt">
+  <div class="container">
+    <h2>공통 KPI</h2>
+    <p class="desc">두 파이프라인의 성과를 측정하는 핵심 지표입니다.</p>
+
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="num">5,000+</div>
+        <div class="label">쇼츠당 조회수 (3개월 목표)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="num">40%+</div>
+        <div class="label">완시청률</div>
+      </div>
+      <div class="kpi-card">
+        <div class="num">5%+</div>
+        <div class="label">참여율 (좋아요+댓글+공유)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="num">2%+</div>
+        <div class="label">CTA 전환율</div>
+      </div>
+      <div class="kpi-card">
+        <div class="num">100+</div>
+        <div class="label">월간 앱 다운로드 (쇼츠 경유)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="num">70%+</div>
+        <div class="label">자동화율</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="links">
+      <a href="../index.html">Habitree Home</a>
+      <a href="../linkmap/index.html">Linkmap</a>
+      <a href="../readtree/index.html">ReadTree</a>
+      <a href="../brand-concept.html">Brand Concept</a>
+    </div>
+    <p>&copy; 2025 ~ 2026 <a href="../index.html">Habitree</a>. 보이지 않는 습관을 보이는 자산으로.</p>
+  </div>
+</footer>
+
+</body>
+</html>

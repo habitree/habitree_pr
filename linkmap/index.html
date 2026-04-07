@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linkmap — Habitree</title>
+<meta name="description" content="Linkmap: 개발자를 위한 설정 관리 플랫폼. 서비스 맵, 환경변수 암호화, AI 스택 아키텍트.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root {
+  --primary: hsl(220, 65%, 30%);
+  --primary-light: hsl(220, 60%, 92%);
+  --accent: #2bee79;
+  --bg: hsl(220, 20%, 97%);
+  --surface: #ffffff;
+  --text: hsl(220, 30%, 15%);
+  --text-muted: hsl(220, 15%, 45%);
+  --border: hsl(220, 15%, 88%);
+  --habitree-dark: #0b271e;
+  --habitree-green: #52b788;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body { font-family: 'Pretendard Variable', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+a { color: inherit; text-decoration: none; }
+
+/* Global Nav */
+.global-nav {
+  background: var(--habitree-dark); color: #fff; padding: 10px 0; font-size: 13px;
+}
+.global-nav .inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.global-nav a.brand { color: var(--habitree-green); font-weight: 700; display: flex; align-items: center; gap: 6px; }
+.global-nav a.brand img { width: 18px; height: 18px; border-radius: 4px; }
+.global-nav .breadcrumb { display: flex; align-items: center; gap: 12px; }
+.global-nav .sep { color: hsla(0,0%,100%,0.3); }
+.global-nav .current { color: hsla(0,0%,100%,0.9); }
+.global-nav .links { display: flex; gap: 16px; }
+.global-nav .links a { color: hsla(0,0%,100%,0.7); transition: color 0.2s; }
+.global-nav .links a:hover { color: #fff; }
+
+/* Hero */
+.hero {
+  background: linear-gradient(135deg, hsl(220, 65%, 20%) 0%, hsl(220, 50%, 30%) 50%, hsl(200, 60%, 25%) 100%);
+  color: #fff; padding: 80px 0 60px; text-align: center;
+}
+.hero h1 { font-family: 'Noto Serif KR', serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; margin-bottom: 16px; letter-spacing: -0.03em; }
+.hero .tagline { font-size: 1.1rem; color: hsla(0,0%,100%,0.8); max-width: 600px; margin: 0 auto 32px; }
+.hero .pills { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
+.hero .pill { background: hsla(0,0%,100%,0.12); border: 1px solid hsla(0,0%,100%,0.2); color: #fff; padding: 6px 16px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; }
+
+/* Container */
+.container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+/* Cards Grid */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; padding: 60px 0; }
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+  padding: 32px; transition: transform 0.3s, box-shadow 0.3s;
+}
+.card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+.card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; color: var(--primary); }
+.card p { color: var(--text-muted); font-size: 0.9rem; }
+.card .icon { font-size: 2rem; margin-bottom: 16px; }
+
+/* CTA Section */
+.cta-section { text-align: center; padding: 60px 0 80px; }
+.cta-section h2 { font-family: 'Noto Serif KR', serif; font-size: 1.8rem; font-weight: 900; margin-bottom: 12px; }
+.cta-section p { color: var(--text-muted); margin-bottom: 32px; }
+.btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 28px; border-radius: 12px; font-weight: 700; font-size: 0.9rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { box-shadow: 0 8px 24px hsla(220, 65%, 30%, 0.3); }
+.btn-outline { border: 2px solid var(--border); color: var(--text); }
+.btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+
+/* Features */
+.features-section { background: var(--surface); padding: 60px 0; }
+.features-section h2 { text-align: center; font-family: 'Noto Serif KR', serif; font-size: 1.6rem; font-weight: 900; margin-bottom: 40px; }
+
+/* Footer */
+.hub-footer {
+  background: var(--habitree-dark); color: hsla(0,0%,100%,0.6); padding: 40px 0; text-align: center; font-size: 0.85rem;
+}
+.hub-footer a { color: var(--habitree-green); }
+.hub-footer .links { display: flex; gap: 24px; justify-content: center; margin-bottom: 16px; }
+.hub-footer .links a { color: hsla(0,0%,100%,0.7); transition: color 0.2s; }
+.hub-footer .links a:hover { color: #fff; }
+
+@media (max-width: 640px) {
+  .global-nav .links { display: none; }
+  .hero { padding: 60px 0 40px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Global Nav -->
+<nav class="global-nav">
+  <div class="inner">
+    <div class="breadcrumb">
+      <a href="../index.html" class="brand">
+        <img src="../assets/images/habitree-logo.png" alt=""> Habitree
+      </a>
+      <span class="sep">/</span>
+      <span class="current">Linkmap</span>
+    </div>
+    <div class="links">
+      <a href="../readtree/index.html">ReadTree</a>
+      <a href="../presskit.html">Press Kit</a>
+      <a href="../brand-concept.html">Brand</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <h1>연결은 많은데<br>지도가 없었습니다</h1>
+    <p class="tagline">개발자를 위한 설정 관리 플랫폼. 서비스 맵으로 연결을 시각화하고, 환경변수를 AES-256-GCM으로 안전하게 관리합니다.</p>
+    <div class="pills">
+      <span class="pill">Next.js 16</span>
+      <span class="pill">Cloudflare Workers</span>
+      <span class="pill">React Flow</span>
+      <span class="pill">AES-256-GCM</span>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features-section">
+  <div class="container">
+    <h2>핵심 기능</h2>
+    <div class="cards">
+      <div class="card">
+        <div class="icon">🗺️</div>
+        <h3>인터랙티브 서비스 맵</h3>
+        <p>React Flow 기반으로 외부 서비스 연결을 시각적으로 관리합니다. 드래그 앤 드롭으로 아키텍처를 설계하세요.</p>
+      </div>
+      <div class="card">
+        <div class="icon">🔐</div>
+        <h3>환경변수 암호화 관리</h3>
+        <p>AES-256-GCM 암호화로 API 키와 시크릿을 안전하게 보관합니다. 더 이상 .env 파일을 잃어버리지 마세요.</p>
+      </div>
+      <div class="card">
+        <div class="icon">🤖</div>
+        <h3>AI 스택 아키텍트</h3>
+        <p>프로젝트 목표에 맞는 최적의 서비스 조합을 AI가 추천합니다. SaaS, Blog, AI App 등 다양한 템플릿 지원.</p>
+      </div>
+      <div class="card">
+        <div class="icon">🚀</div>
+        <h3>원클릭 템플릿</h3>
+        <p>SaaS, Blog, AI App 등 검증된 스택 구성을 한 번의 클릭으로 배포합니다. 초보자도 3분이면 시작할 수 있습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Documents CTA -->
+<section class="cta-section">
+  <div class="container">
+    <h2>더 자세히 알아보기</h2>
+    <p>Linkmap의 비전, 시장 분석, 기술 아키텍처를 확인하세요.</p>
+    <div class="btn-row">
+      <a href="pitch.html" class="btn btn-primary">📊 Pitch Deck</a>
+      <a href="prfaq.html" class="btn btn-outline">📋 사업소개서 (PR FAQ)</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="hub-footer">
+  <div class="container">
+    <div class="links">
+      <a href="../index.html">Habitree Home</a>
+      <a href="../readtree/index.html">ReadTree</a>
+      <a href="../brand-concept.html">Brand Concept</a>
+      <a href="../presskit.html">Press Kit</a>
+    </div>
+    <p>&copy; 2025 ~ 2026 <a href="../index.html">Habitree</a>. 보이지 않는 습관을 보이는 자산으로.</p>
+  </div>
+</footer>
+
+</body>
+</html>
